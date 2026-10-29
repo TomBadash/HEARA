@@ -1,0 +1,74 @@
+name: Rega
+options:
+  bundleIdPrefix: com.example.rega
+  deploymentTarget:
+    iOS: '17.0'
+  developmentLanguage: en
+  knownRegions: [en, he]
+settings:
+  base:
+    SWIFT_VERSION: '5.0'
+    IPHONEOS_DEPLOYMENT_TARGET: '17.0'
+    TARGETED_DEVICE_FAMILY: '1,2'
+    MARKETING_VERSION: '0.1.0'
+    CURRENT_PROJECT_VERSION: '1'
+    CODE_SIGN_STYLE: Automatic
+    REGA_APP_GROUP: group.com.example.rega
+    REGA_BUNDLE_ID: com.example.rega
+    DEVELOPMENT_TEAM: ''
+targets:
+  Rega:
+    type: application
+    platform: iOS
+    sources: [App, Shared, Resources]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(REGA_BUNDLE_ID)
+    info:
+      path: Config/App-Info.plist
+      properties:
+        CFBundleDisplayName: HEARA
+        RegaAppGroup: $(REGA_APP_GROUP)
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        'UISupportedInterfaceOrientations~ipad': [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+    entitlements:
+      path: Config/App.entitlements
+      properties:
+        com.apple.security.application-groups: ['$(REGA_APP_GROUP)']
+    dependencies:
+      - target: RegaWidget
+        embed: true
+  RegaWidget:
+    type: app-extension
+    platform: iOS
+    sources: [Widget, Shared, Resources]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(REGA_BUNDLE_ID).widget
+        SKIP_INSTALL: YES
+        APPLICATION_EXTENSION_API_ONLY: YES
+    info:
+      path: Config/Widget-Info.plist
+      properties:
+        CFBundleDisplayName: HEARA Widget
+        RegaAppGroup: $(REGA_APP_GROUP)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Config/Widget.entitlements
+      properties:
+        com.apple.security.application-groups: ['$(REGA_APP_GROUP)']
+  RegaTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [Tests]
+    dependencies:
+      - target: Rega
+schemes:
+  Rega:
+    build:
+      targets:
+        Rega: all
+    test:
+      targets: [RegaTests]
